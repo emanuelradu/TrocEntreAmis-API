@@ -2,6 +2,7 @@
 Python API for TrocEntreAmis project to interact with the Blockchain smart contract
 
 In order to run it:
+
 pip install fastapi
 
 pip install uvicorn
