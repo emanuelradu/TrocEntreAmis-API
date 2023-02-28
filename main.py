@@ -7,192 +7,20 @@ from web3.contract import Contract, ContractFunction
 
 app = FastAPI()
 
-w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545')) # initialize Web3 provider with Ethereum node endpoint
 NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 # ABI and contract address of the TrocEntreAmis smart contract
-abi = [
-    {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "id",
-                "type": "uint256"
-            }
-        ],
-        "name": "findItem",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "address",
-                        "name": "owner",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "value",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "status",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct TrocEntreAmis.Item memory",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "name",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "description",
-                "type": "string"
-            },
-            {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "status",
-                "type": "uint256"
-            }
-        ],
-        "name": "addItem",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-      "inputs":[
-         {
-            "internalType":"uint256",
-            "name":"id",
-            "type":"uint256"
-         },
-         {
-            "internalType":"string",
-            "name":"name",
-            "type":"string"
-         },
-         {
-            "internalType":"string",
-            "name":"description",
-            "type":"string"
-         },
-         {
-            "internalType":"uint256",
-            "name":"value",
-            "type":"uint256"
-         },
-         {
-            "internalType":"uint256",
-            "name":"status",
-            "type":"uint256"
-         }
-      ],
-      "name":"updateItem",
-      "outputs":[
-         {
-            "components":[
-               {
-                  "internalType":"address",
-                  "name":"owner",
-                  "type":"address"
-               },
-               {
-                  "internalType":"uint256",
-                  "name":"id",
-                  "type":"uint256"
-               },
-               {
-                  "internalType":"string",
-                  "name":"name",
-                  "type":"string"
-               },
-               {
-                  "internalType":"string",
-                  "name":"description",
-                  "type":"string"
-               },
-               {
-                  "internalType":"uint256",
-                  "name":"value",
-                  "type":"uint256"
-               },
-               {
-                  "internalType":"uint256",
-                  "name":"status",
-                  "type":"uint256"
-               }
-            ],
-            "internalType":"struct TrocEntreAmis.Item",
-            "name":"",
-            "type":"tuple"
-         }
-      ],
-      "stateMutability":"nonpayable",
-      "type":"function"
-   },
-   {
-      "inputs":[
-         {
-            "internalType":"address",
-            "name":"newOwner",
-            "type":"address"
-         },
-         {
-            "internalType":"uint256",
-            "name":"id",
-            "type":"uint256"
-         }
-      ],
-      "name":"transferOwnership",
-      "outputs":[
-         
-      ],
-      "stateMutability":"nonpayable",
-      "type":"function"
-   }
-]
+abi = [{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"addItem","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"status","type":"uint256"}],"internalType":"struct TrocEntreAmis.Item","name":"","type":"tuple"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"findItem","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"status","type":"uint256"}],"internalType":"struct TrocEntreAmis.Item","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAll","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"status","type":"uint256"}],"internalType":"struct TrocEntreAmis.Item[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"},{"internalType":"uint256","name":"id","type":"uint256"}],"name":"transferOwnership","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"status","type":"uint256"}],"internalType":"struct TrocEntreAmis.Item","name":"","type":"tuple"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"updateItem","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"status","type":"uint256"}],"internalType":"struct TrocEntreAmis.Item","name":"","type":"tuple"}],"stateMutability":"nonpayable","type":"function"}]
 
-contract_address = "0x..." # address of the deployed contract on the blockchain
+contract_address = "0x9cc40BaC75FED80d5B69e6A48D5014DD8CFb11A4" # address of the deployed contract on the blockchain
+my_wallet_address = "0000" # address of the owner
+my_private_key = "0000" # pk of the owner
 
-# connect to the Arbitrum testnet node
-web3 = Web3(Web3.HTTPProvider('https://rinkeby.arbitrum.io/rpc'))
+# connect to the Arbitrum blockchain
+web3 = Web3(Web3.HTTPProvider('https://arb1.arbitrum.io/rpc'))
+
+my_wallet = web3.toChecksumAddress(my_wallet_address)
+transactionCount = web3.eth.getTransactionCount(my_wallet) - 1
 
 # check if web3 is connected to the network
 if web3.isConnected():
@@ -212,7 +40,7 @@ class ItemCreate(ItemBase):
     pass
 
 class ItemUpdate(ItemBase):
-    status: int
+    pass
 
 class Item(ItemBase):
     id: int
@@ -221,16 +49,21 @@ class Item(ItemBase):
 
 class ItemTransfer(BaseModel):
     new_owner: str
-
+    id: int
 class ContractLogicError(Exception):
     pass
+
+def getIncrementedTransactionCount():
+    global transactionCount
+    transactionCount += 1
+    return transactionCount
 
 @app.get("/items")
 def read_items():
     items = []
-    for i in range(contract.functions.itemsLength().call()):
-        item = contract.functions.findItem(i).call()
-        items.append(Item(id=item[1], owner=item[0], name=item[2], description=item[3], value=item[4], status=item[5]))
+    print(contract.functions.getAll().call())
+    for item in contract.functions.getAll().call():
+        items.append(Item(id=item[0], owner=item[1], name=item[2], description=item[3], value=item[4], status=item[5]))
     return items
 
 @app.get("/items/{item_id}")
@@ -239,20 +72,19 @@ def read_item(item_id: int):
         item = contract.functions.findItem(item_id).call()
     except:
         raise HTTPException(status_code=404, detail="Item not found")
-    return Item(id=item[1], owner=item[0], name=item[2], description=item[3], value=item[4], status=item[5])
+    return Item(id=item[0], owner=item[1], name=item[2], description=item[3], value=item[4], status=item[5])
 
 @app.post("/items")
 def create_item(item: ItemCreate):
-    txn = contract.functions.addItem(item.name, item.description, item.value, 1).buildTransaction({
-        'from': web3.eth.accounts[0],
+    txn = contract.functions.addItem(item.name, item.description, item.value).buildTransaction({
+        'from': my_wallet,
         'gas': 1000000,
-        'gasPrice': web3.toWei('1', 'gwei')
+        'gasPrice': web3.toWei('1', 'gwei'),
+        'nonce': getIncrementedTransactionCount()
     })
-    signed_txn = web3.eth.account.sign_transaction(txn, private_key='<YOUR_PRIVATE_KEY>') # replace with your private key
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key=my_private_key)
     txn_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    receipt = web3.eth.wait_for_transaction_receipt(txn_hash)
-    item_id = receipt['events'][0]['args']['id']
-    return read_item(item_id)
+    return str(txn_hash)
 
 @app.put("/items/{item_id}")
 def update_item(item_id: int, item: ItemUpdate):
@@ -260,30 +92,41 @@ def update_item(item_id: int, item: ItemUpdate):
         item_in_contract = contract.functions.findItem(item_id).call()
     except:
         raise HTTPException(status_code=404, detail="Item not found")
-    if item_in_contract[0] != web3.eth.accounts[0]:
+    if item_in_contract[1] != my_wallet_address:
         raise HTTPException(status_code=403, detail="Not authorized")
-    txn = contract.functions.updateItem(item_id, item.name, item.description, item.value, item.status).buildTransaction({
-        'from': web3.eth.accounts[0],
+    txn = contract.functions.updateItem(item_id, item.name, item.description, item.value).buildTransaction({
+        'from': my_wallet,
         'gas': 1000000,
-        'gasPrice': web3.toWei('1', 'gwei')
+        'gasPrice': web3.toWei('1', 'gwei'),
+        'nonce': getIncrementedTransactionCount()
     })
-    signed_txn = web3.eth.account.sign_transaction(txn, private_key='<YOUR_PRIVATE_KEY>') # replace with your private key
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key=my_private_key) # replace with your private key
     txn_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
     web3.eth.wait_for_transaction_receipt(txn_hash)
     return read_item(item_id)
 
-@app.patch("/items/{item_id}/transfer-owner")
-def transfer_owner(item_id: int, new_owner: str, request: Request):
+@app.patch("/items/transfer-owner")
+def transfer_owner(item: ItemTransfer):
     try:
-        item = contract.functions.findItem(item_id).call()
-        current_owner = item[0]
-        if current_owner != request.client.host:
-            raise HTTPException(status_code=401, detail="Only the current owner can transfer ownership")
-        if new_owner == NULL_ADDRESS:
-            raise HTTPException(status_code=400, detail="New owner address cannot be null")
-
-        contract.functions.transferOwnership(new_owner, item_id).transact()
-        return JSONResponse(content={"message": f"Item {item_id} ownership transferred to {new_owner}"})
-    except ContractLogicError as e:
+        item_in_contract = contract.functions.findItem(item.id).call()
+    except :
         raise HTTPException(status_code=404, detail="Item not found")
+    
+    if item_in_contract[1] != my_wallet_address:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    if item.new_owner == NULL_ADDRESS:
+        raise HTTPException(status_code=400, detail="New owner address cannot be null")
+
+    txn = contract.functions.transferOwnership(item.new_owner, item.id).buildTransaction({
+        'from': my_wallet,
+        'gas': 1000000,
+        'gasPrice': web3.toWei('1', 'gwei'),
+        'nonce': getIncrementedTransactionCount()
+    })
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key=my_private_key) # replace with your private key
+    txn_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    web3.eth.wait_for_transaction_receipt(txn_hash)
+    
+    return JSONResponse(content={"message": f"Item {item.id} ownership transferred to {item.new_owner}"})
+    
 
